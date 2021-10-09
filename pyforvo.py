@@ -102,14 +102,14 @@ class ForvoAgent(object):
     def __init__(self, api_key):
         self.logger = logging.getLogger(__name__)
 
-        if api_key is None:
-            raise Exception('Must provide an api key to use forvo parser')
         self.api_key = api_key
 
         self.base_url = "https://apifree.forvo.com/action/word-pronunciations/format/json/word/"
         self._data = {}
 
     def query(self, word, language, preferred_users=None) -> ForvoResults:
+        if not self.api_key:
+            return ForvoResults({'attributes': {'total': 0}})
         url = self.base_url + "{}/id_lang_speak/138/language/{}/key/{}/".format(urllib.parse.quote(word), language, self.api_key)
         hdr = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'}
         req = urllib.request.Request(url, headers=hdr)
@@ -124,16 +124,16 @@ class ForvoAgent(object):
 
 
 class ForvoParser:
-    forvo = ForvoAgent(os.getenv('FORVO_API_KEY'))
-
     def __init__(self, pref_users=None, language='ru'):
         self.logger = logging.getLogger('ForvoParser')
+
+        self.forvo = ForvoAgent(os.getenv('FORVO_API_KEY'))
 
         self.pref_users = [] if pref_users is None else pref_users
         self.language = language
 
     def download(self, word, out_dir):
-        prons = ForvoParser.forvo.query(word, self.language, self.pref_users)
+        prons = self.forvo.query(word, self.language, self.pref_users)
 
         if not prons.num_pron:
             self.logger.debug('No results found for word %s', word)

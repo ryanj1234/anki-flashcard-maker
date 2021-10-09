@@ -301,7 +301,7 @@ class Controller:
 def run_addon() -> None:
     config = get_config()
 
-    if config['FORVO_API_KEY']:
+    if config.get('FORVO_API_KEY'):
         os.environ['FORVO_API_KEY'] = config['FORVO_API_KEY']
 
     language = config['LANGUAGE']
