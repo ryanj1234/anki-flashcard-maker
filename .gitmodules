@@ -1,0 +1,3 @@
+[submodule "russianwiktionaryparser"]
+	path = russianwiktionaryparser
+	url = git@github.com:ryanj1234/RussianWiktionaryParser.git
