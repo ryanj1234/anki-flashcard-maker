@@ -8,6 +8,7 @@ class Flashcard(object):
     media_dir = '.'
 
     def __init__(self, entered_word, parser, audio_parser=None):
+        self.logger = logging.getLogger(f"Flashcard_{entered_word}")
         self._parser = parser
         self._audio_parser = audio_parser
 
@@ -18,7 +19,7 @@ class Flashcard(object):
         entries = self._parser.fetch(entered_word)
 
         if not entries:
-            _LOG.debug('Using search function to find entries')
+            self.logger.debug('Using search function to find entries')
             entries = self._get_entries_from_search(entries, entered_word)
 
         followed_entries = self._follow_entries_to_base(entries, 0)
@@ -35,11 +36,11 @@ class Flashcard(object):
 
     def _parse_chosen_entry(self):
         self.word = self.chosen_entry.word
-        # TODO: forcing to use forvo, need to fix spanish downloads
-        # if self.chosen_entry.audio_links:
-        #     self._download_file(self.chosen_entry.audio_links[0])
-        if self._audio_parser is not None:
-            _LOG.info('Checking Forvo for pronunciations')
+        if self.chosen_entry.audio_links:
+            self.logger.info('Downloading audio from wiktionary')
+            self._download_file(self.chosen_entry.audio_links[0])
+        if self._audio_file is None and self._audio_parser is not None:
+            self.logger.info('Checking Forvo for pronunciations')
             self._audio_file = self._audio_parser.download(self.chosen_entry.word, Flashcard.media_dir)
 
     @property
@@ -149,3 +150,11 @@ def check_for_match(search_results, entered_word):
             match = suggestion
             break
     return match
+
+
+if __name__ == '__main__':
+    from russianwiktionaryparser import WiktionaryParser
+    from pyforvo import ForvoParser
+    logging.basicConfig(level=logging.DEBUG)
+    word = 'casa'
+    card = Flashcard(word, WiktionaryParser(language='Spanish'), ForvoParser(language='es'))

@@ -6,11 +6,11 @@ import logging
 import os
 
 
-def create_forvo_fname(word):
-    return "pronunciation_ru_{}.mp3".format(word)
+def create_forvo_fname(word, code):
+    return f"pronunciation_{code}_{word}.mp3"
 
 
-class ForvoEntry(object):
+class ForvoEntry:
     def __init__(self, raw):
         self.username = raw["username"]
         self.word = raw["word"]
@@ -19,11 +19,12 @@ class ForvoEntry(object):
         self.rating = raw["rate"]
         self.num_votes = raw["num_votes"]
         self.path = raw["pathmp3"]
+        self.code = raw["code"]
 
     def download(self, out_dir=''):
         hdr = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'}
         req = urllib.request.Request(self.path, headers=hdr)
-        of = os.path.join(out_dir, create_forvo_fname(self.word))
+        of = os.path.join(out_dir, create_forvo_fname(self.word, self.code))
         with urllib.request.urlopen(req) as response, open(of, 'wb') as out_file:
             shutil.copyfileobj(response, out_file)
 
@@ -33,7 +34,7 @@ class ForvoEntry(object):
         return "Pronunciation by {} ({} from {})\n\tRating {} ({} votes)".format(self.username, self.sex, self.country, self.rating, self.num_votes)
 
 
-class ForvoResults(object):
+class ForvoResults:
     def __init__(self, dat, preferred_users=None):
         self.logger = logging.getLogger(__name__)
         self._index = 0
@@ -98,8 +99,8 @@ class ForvoResults(object):
         return self._prons[0]
 
 
-class ForvoAgent(object):
-    def __init__(self, api_key):
+class ForvoAgent:
+    def __init__(self, api_key: str):
         self.logger = logging.getLogger(__name__)
 
         self.api_key = api_key
@@ -107,7 +108,7 @@ class ForvoAgent(object):
         self.base_url = "https://apifree.forvo.com/action/word-pronunciations/format/json/word/"
         self._data = {}
 
-    def query(self, word, language, preferred_users=None) -> ForvoResults:
+    def query(self, word: str, language: str, preferred_users=list) -> ForvoResults:
         if not self.api_key:
             return ForvoResults({'attributes': {'total': 0}})
         url = self.base_url + "{}/id_lang_speak/138/language/{}/key/{}/".format(urllib.parse.quote(word), language, self.api_key)
@@ -151,5 +152,6 @@ class ForvoParser:
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
     f = ForvoParser()
     res = f.download('идти', '.')
