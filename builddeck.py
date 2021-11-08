@@ -23,6 +23,10 @@ def get_deck(language):
         return RussianVocabDeck()
     elif language.upper() == 'SPANISH':
         return SpanishVocabDeck()
+    elif language.upper() == 'ITALIAN':
+        return ItalianVocabDeck()
+    elif language.upper() == 'GERMAN':
+        return GermanVocabDeck()
     else:
         raise Exception(f"Unimplemented language {language}")
 
@@ -88,7 +92,7 @@ class RussianVocabDeck(VocabDeck):
                 {
                     'name': 'Card 1',
                     'qfmt': 'Listen...<br>{{Audio}}',
-                    'afmt': '{{Front}}<hr id="answer">{{Back}}',
+                    'afmt': '{{FrontSide}}<hr id="answer">{{Back}}',
                 },
                 {
                     'name': 'Card 2',
@@ -104,6 +108,64 @@ class SpanishVocabDeck(VocabDeck):
     def __init__(self):
         guid = 674801255
         name = 'Spanish Auto Generated Vocab'
+        model = {
+            'guid': 146379426,
+            'name': 'Auto Vocab With Examples Show Word',
+            'fields': [
+                {'name': 'Front'},
+                {'name': 'Back'},
+                {'name': 'Audio'},
+            ],
+            'css': '.card {font-family: arial; font-size: 20px; text-align: center; color: black; background-color: white;} .front .examples { display:none }',
+            'templates': [
+                {
+                    'name': 'Card 1',
+                    'qfmt': '{{Front}}<br>{{Audio}}',
+                    'afmt': '{{Front}}<hr id="answer">{{Back}}',
+                },
+                {
+                    'name': 'Card 2',
+                    'qfmt': '<div class=front>{{Back}}</div>',
+                    'afmt': '{{Back}}<hr id="answer">{{Front}}{{Audio}}',
+            }]
+        }
+
+        super().__init__(guid, name, model)
+
+
+class ItalianVocabDeck(VocabDeck):
+    def __init__(self):
+        guid = 474811349
+        name = 'Italian Auto Generated Vocab'
+        model = {
+            'guid': 146379426,
+            'name': 'Auto Vocab With Examples Show Word',
+            'fields': [
+                {'name': 'Front'},
+                {'name': 'Back'},
+                {'name': 'Audio'},
+            ],
+            'css': '.card {font-family: arial; font-size: 20px; text-align: center; color: black; background-color: white;} .front .examples { display:none }',
+            'templates': [
+                {
+                    'name': 'Card 1',
+                    'qfmt': '{{Front}}<br>{{Audio}}',
+                    'afmt': '{{Front}}<hr id="answer">{{Back}}',
+                },
+                {
+                    'name': 'Card 2',
+                    'qfmt': '<div class=front>{{Back}}</div>',
+                    'afmt': '{{Back}}<hr id="answer">{{Front}}{{Audio}}',
+            }]
+        }
+
+        super().__init__(guid, name, model)
+
+
+class GermanVocabDeck(VocabDeck):
+    def __init__(self):
+        guid = 268124051
+        name = 'German Auto Generated Vocab'
         model = {
             'guid': 146379426,
             'name': 'Auto Vocab With Examples Show Word',

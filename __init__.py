@@ -25,7 +25,9 @@ from . builddeck import to_html
 
 LANGUAGE_CODES = {
     'Russian': 'ru',
-    'Spanish': 'es'
+    'Spanish': 'es',
+    'Italian': 'it',
+    'German': 'de'
 }
 
 
