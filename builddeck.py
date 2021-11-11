@@ -92,7 +92,7 @@ class RussianVocabDeck(VocabDeck):
                 {
                     'name': 'Card 1',
                     'qfmt': 'Listen...<br>{{Audio}}',
-                    'afmt': '{{FrontSide}}<hr id="answer">{{Back}}',
+                    'afmt': '{{Front}}<br>{{Audio}}<hr id="answer">{{Back}}',
                 },
                 {
                     'name': 'Card 2',
